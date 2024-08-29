@@ -28,7 +28,19 @@ public class VehicleInfoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String btn = request.getParameter("btn");
 
-        String vehicleNo = request.getParameter("vehicleNo");
+        String vehicleNo = "";
+        String cnic = "";
+        if(!btn.equalsIgnoreCase("searchCnic")) {
+            vehicleNo = request.getParameter("vehicleNo");
+        }
+
+        if(btn.equalsIgnoreCase("searchCnic")){
+         cnic  =    request.getParameter("cnic");
+            response.sendRedirect("index.jsp?searchByCnic="+cnic);
+        }
+
+
+
         String bodyType = "";
         String manufacturer = "";
         int engineCapacity = 0;
@@ -36,24 +48,29 @@ public class VehicleInfoServlet extends HttpServlet {
         String engineType = "";
         String engine ="";
         String color = "";
-        if(!btn.equalsIgnoreCase("search")) {
-             manufacturer = request.getParameter("manufacturer");
-             bodyType =   request.getParameter("bodyType");
-             Integer.parseInt(request.getParameter("engineCapacity"));
-             numOfSeats = Integer.parseInt(request.getParameter("numOfSeats"));
-             engineType =  request.getParameter("engineType");
-             engine  =  request.getParameter("engine");
-             color=  request.getParameter("color");
+
+        if(!btn.equalsIgnoreCase("search"))  {
+            if(!btn.equalsIgnoreCase("searchCnic")) {
+                    manufacturer = request.getParameter("manufacturer");
+                    bodyType = request.getParameter("bodyType");
+                    engineCapacity = Integer.parseInt(request.getParameter("engineCapacity"));
+                    numOfSeats = Integer.parseInt(request.getParameter("numOfSeats"));
+                    engineType = request.getParameter("engineType");
+                    engine = request.getParameter("engine");
+                    color = request.getParameter("color");
+            }
+
         }
+
         if (btn.equalsIgnoreCase("register")) {
 
 
             //harec connecton watha unkha bd ma try carhc m pereped m kadhan
-            Connection connection = ConnectionProvider.getConnection();
-            String query = "INSERT INTO VehicleInfo (vehicleNo, bodyType, manufacturer, engineCapacity, numOfSeats, engineType, engine, color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO VehicleInfo ( vehicleNo, bodyType, manufacturer, engineCapacity, numOfSeats, engineType, engine, color, ownerId) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
 
 
             HttpSession session = request.getSession();
+            Connection connection = ConnectionProvider.getConnection();
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, vehicleNo);
@@ -64,6 +81,7 @@ public class VehicleInfoServlet extends HttpServlet {
                 preparedStatement.setString(6, engineType);
                 preparedStatement.setString(7, engine);
                 preparedStatement.setString(8, color);
+                preparedStatement.setString(9,"1212");
 
             int rows = preparedStatement.executeUpdate();
 
@@ -85,6 +103,7 @@ public class VehicleInfoServlet extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
 
         } else if (btn.equalsIgnoreCase("update")) {
 
@@ -123,6 +142,7 @@ public class VehicleInfoServlet extends HttpServlet {
            }catch (Exception e){
                e.printStackTrace();
            }
+
         }else if (btn.equalsIgnoreCase("delete")) {
             Connection connection = ConnectionProvider.getConnection();
             String query = "DELETE FROM VehicleInfo WHERE vehicleNo=?";
@@ -162,6 +182,7 @@ public class VehicleInfoServlet extends HttpServlet {
 
     }
 }
+
 
 //PELI APP table banany hai us m colums add krrni jo coulumns page m hai sarri
 // us k baad aap yaha per insert k query challao gy.

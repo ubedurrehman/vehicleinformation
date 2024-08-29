@@ -33,6 +33,41 @@
 
 </head>
 <% Connection connection = ConnectionProvider.getConnection();
+
+    String cnic = "";
+      String ownerName = "";
+      String ownerFname= "";
+      String ownerId = "";
+      String ownerAddress = "";
+boolean      isFound = false;
+    if(request.getParameter("searchByCnic")!=null){
+        cnic  = request.getParameter("searchByCnic");
+
+        String query = "SELECT * FROM OWNER WHERE cnic = ?";
+        PreparedStatement p  = connection.prepareStatement(query);
+        p.setString(1,cnic);
+        ResultSet r =   p.executeQuery();
+
+
+        if(r.next()){
+            ownerName = r.getString("ownerName");
+            ownerFname  = r.getString("ownerFname");
+            ownerAddress  = r.getString("ownerAddress");
+            ownerId = r.getString("ownerId");
+            isFound  = true;
+
+            %>
+                <script> alert("Owner Name found Successfully@"); </script>
+            <%
+
+        }else{%>
+                        <script> alert("Owner Not Found...");</script>
+<%
+}
+    }
+
+
+
         String vehicleNo = "";
     if(request.getParameter("id")!=null) {
             vehicleNo = request.getParameter("id");
@@ -129,7 +164,7 @@
 
 
         <div class="col-md-6">
-<form action="/GIS_war_exploded/vehicleinfo" method="post">
+<form action="/GIS/vehicleinfo" method="post">
 
             <div class="row">
 
@@ -212,14 +247,57 @@
                     <input type="text" class="form-control" name="color" value="<%=color%>">
                 </div>
             </div>
+
+             <br>
+            <div class="row">
+                    <div class="col-md-6" >
+                        <label>Enter CNIC</label>
+                            <input type="text" class="form-control" name="cnic" value=<%=cnic%> >
+                    </div>
+
+                     <div class="col-md-6">
+                     <label></label>
+                         <button class="btn btn-primary" value="searchCnic" name="btn">Search</button>
+                     </div>
+             </div>
+
+             <br>
+             <div class="row">
+                   <input type="hidden" name = "ownerId" value=<%= ownerId %>>
+                   <div class="col-md-6" >
+
+                       <label>Owner Name </label>
+                           <input type="text" class="form-control" name="ownerName" value=<%= ownerName %> >
+                    </div>
+
+                    <div class="col-md-6">
+                       <label>Owner F name</label>
+                       <input type="text" class="form-control" name="ownerFname" value=<%= ownerFname %> >
+                    </div>
+
+              </div>
+              <div class="row">
+                  <div class="col-md-6" >
+                      <label>Owner Address</label>
+                      <textarea class="form-control" name="ownerAddress" rows="3" ><%= ownerAddress %> </textarea>
+
+                  </div>
+
+
+              </div>
+
+            <br>
+            <br>
             <br>
 
+        <div class="row">
             <div class="container " style="display: flex; gap: 10px;">
                 <button class="btn" style="  padding: 10px 10px;  border-radius: 5px; background-color: #007bff; color: white;" value="register" name="btn">Register</button>
                 <button class="btn" style="  padding: 10px 10px; border-radius: 5px; background-color: #007bff; color: white;" value="update" name="btn">Update</button>
                 <button class="btn" style="  padding: 10px 10px; border-radius: 5px; background-color: #007bff; color: white;" value="delete" name="btn">Delete</button>
                 <button class="btn" style="  padding: 10px 10px; border-radius: 5px; background-color: #007bff; color: white;" value="search" name="btn">Search</button>
             </div>
+         </div>
 </form>
         </div>
 
