@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="GIS:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>GIS</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="GIS-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="GIS:war exploded" />
+    </root>
+  </artifact>
+</component>
