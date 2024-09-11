@@ -63,39 +63,78 @@ public class VehicleInfoServlet extends HttpServlet {
         }
 
         if (btn.equalsIgnoreCase("register")) {
-
-
-            //harec connecton watha unkha bd ma try carhc m pereped m kadhan
-            String query = "INSERT INTO VehicleInfo ( vehicleNo, bodyType, manufacturer, engineCapacity, numOfSeats, engineType, engine, color, ownerId) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
-
-
-            HttpSession session = request.getSession();
             Connection connection = ConnectionProvider.getConnection();
+            HttpSession session = request.getSession();
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setString(1, vehicleNo);
-                preparedStatement.setString(2, bodyType);
-                preparedStatement.setString(3, manufacturer);
-                preparedStatement.setInt(4, engineCapacity);
-                preparedStatement.setInt(5, numOfSeats);
-                preparedStatement.setString(6, engineType);
-                preparedStatement.setString(7, engine);
-                preparedStatement.setString(8, color);
-                preparedStatement.setString(9,"1212");
+          //OWNER INSERTION QUERY LAGAO aur erequest value get krrwayo
 
-            int rows = preparedStatement.executeUpdate();
+            String ownerName =request.getParameter("ownerName");
+            String ownerFname=request.getParameter("ownerFname");
+            cnic=request.getParameter("cnic");
+            String ownerAddress=request.getParameter("ownerAddress");
+            String query1="INSERT INTO owner ( ownerName, ownerFname,cnic,ownerAddress) VALUES (?, ?, ?, ?)";
+            try(PreparedStatement preparedStatement2 = connection.prepareStatement(query1)){
+                preparedStatement2.setString(1,ownerName);
+                preparedStatement2.setString(2,ownerFname);
+                preparedStatement2.setString(3,cnic);
+                preparedStatement2.setString(4,ownerAddress);
+
+               // String ownerId = request.getParameter("ownerId");
+                if(!request.getParameter("ownerId").equals("") || request.getParameter("ownerId") !=null) {
+                    int ownerId = Integer.parseInt(request.getParameter("ownerId"));
+                    String query = "INSERT INTO VehicleInfo ( vehicleNo, bodyType, manufacturer, engineCapacity, numOfSeats, engineType, engine, color, ownerId) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
+
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                        preparedStatement.setString(1, vehicleNo);
+                        preparedStatement.setString(2, bodyType);
+                        preparedStatement.setString(3, manufacturer);
+                        preparedStatement.setInt(4, engineCapacity);
+                        preparedStatement.setInt(5, numOfSeats);
+                        preparedStatement.setString(6, engineType);
+                        preparedStatement.setString(7, engine);
+                        preparedStatement.setString(8, color);
+                        preparedStatement.setInt(9, ownerId);
+
+
+                        int rows = preparedStatement.executeUpdate();
+                        PrintWriter out = response.getWriter();
+                        if (rows > 0) {
+                            session.setAttribute("msg", "Record inserted successfully.");
+                            out.println("Record inserted successfully.");
+                        } else {
+                            session.setAttribute("msg", "Vehicle record could not be inserted.");
+                            out.println("Vehicle record could not be inserted.");
+                        }
+
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+//                    Vehicle waaro code add kanduy
+//                    us m ownere id do ge jo ooper aarha hai
+//            INSERT INTO Vehcile(...vehicle , ownerId) VaLUES(?,?.)
+//                    p.setInt(5,ownerId)
+                        }else{
+//                    owner ADd kanddye
+                }
+                int r =  preparedStatement2.executeUpdate();
 
                 PrintWriter out = response.getWriter();
-                if (rows>0) {
-                    session.setAttribute("msg", "Record Inserted Successfully!");
-                    out.println("Record inserted successfully.");
+                if (r>0) {
+                    session.setAttribute("msg", "Owner Inserted Successfully!");
+                    out.println("owner inserted successfully.");
                 } else {
-                    session.setAttribute("msg", "Record Could not be Inserted");
-                    out.println("not record.");
+                    session.setAttribute("msg", "Owner Could not be Inserted");
+                    out.println("Owner not record.");
+
                 }
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
+            //harec connecton watha unkha bd  ma try carhc m pereped m kadhan
+
 
             try {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");

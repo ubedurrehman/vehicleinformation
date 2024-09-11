@@ -15,7 +15,7 @@ public class ConnectionProvider {
 
      public static Connection getConnection() {
          try {
-           return   DriverManager.getConnection("jdbc:mysql://localhost:3306/vehicle","root","");
+           return   DriverManager.getConnection("jdbc:mysql://localhost:3307/vehicle","root","");
          }catch (Exception ee){
              ee.printStackTrace();
              return null;

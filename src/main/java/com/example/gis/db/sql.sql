@@ -25,6 +25,20 @@ create table vehicleinfo
     numOfSeats     int         null,
     engineType     varchar(50) null,
     engine         varchar(50) null,
+    ownerId int,
     color          varchar(30) null
+
 );
 
+create table owner (
+
+
+                       ownerId INT AUTO_INCREMENT PRIMARY KEY,
+                       ownerName VARCHAR(100),
+                       ownerFname VARCHAR(100),
+                       cnic VARCHAR(20),
+                       ownerAddress VARCHAR(255)
+);
+
+ALTER TABLE vehicleinfo
+    ADD ownerId  INT;

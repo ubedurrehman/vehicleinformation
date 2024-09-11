@@ -32,15 +32,15 @@
 
 
 </head>
-<% Connection connection = ConnectionProvider.getConnection();
+       <% Connection connection = ConnectionProvider.getConnection();
 
-    String cnic = "";
+      String cnic = "";
       String ownerName = "";
       String ownerFname= "";
       String ownerId = "";
       String ownerAddress = "";
-boolean      isFound = false;
-    if(request.getParameter("searchByCnic")!=null){
+      boolean      isFound = false;
+       if(request.getParameter("searchByCnic")!=null){
         cnic  = request.getParameter("searchByCnic");
 
         String query = "SELECT * FROM OWNER WHERE cnic = ?";
@@ -61,9 +61,9 @@ boolean      isFound = false;
             <%
 
         }else{%>
-                        <script> alert("Owner Not Found...");</script>
+         <script> alert("Owner Not Found...");</script>
 <%
-}
+  }
     }
 
 
@@ -164,7 +164,7 @@ boolean      isFound = false;
 
 
         <div class="col-md-6">
-<form action="/GIS/vehicleinfo" method="post">
+<form action="/GIS_war_exploded/vehicleinfo" method="post">
 
             <div class="row">
 
@@ -263,7 +263,7 @@ boolean      isFound = false;
 
              <br>
              <div class="row">
-                   <input type="hidden" name = "ownerId" value=<%= ownerId %>>
+                   <input type="hidden" name = "ownerId" value=<%=ownerId%>>
                    <div class="col-md-6" >
 
                        <label>Owner Name </label>
