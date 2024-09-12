@@ -68,19 +68,13 @@ public class VehicleInfoServlet extends HttpServlet {
 
           //OWNER INSERTION QUERY LAGAO aur erequest value get krrwayo
 
-            String ownerName =request.getParameter("ownerName");
-            String ownerFname=request.getParameter("ownerFname");
-            cnic=request.getParameter("cnic");
-            String ownerAddress=request.getParameter("ownerAddress");
-            String query1="INSERT INTO owner ( ownerName, ownerFname,cnic,ownerAddress) VALUES (?, ?, ?, ?)";
-            try(PreparedStatement preparedStatement2 = connection.prepareStatement(query1)){
-                preparedStatement2.setString(1,ownerName);
-                preparedStatement2.setString(2,ownerFname);
-                preparedStatement2.setString(3,cnic);
-                preparedStatement2.setString(4,ownerAddress);
+            try{
+
+
 
                // String ownerId = request.getParameter("ownerId");
-                if(!request.getParameter("ownerId").equals("") || request.getParameter("ownerId") !=null) {
+//                Yaha agar owner id milllla tu aap ownere ID vehicle m doo go aur sirf vehicle register krro ada
+                if(!request.getParameter("ownerId").equals("") && request.getParameter("ownerId") !=null) {
                     int ownerId = Integer.parseInt(request.getParameter("ownerId"));
                     String query = "INSERT INTO VehicleInfo ( vehicleNo, bodyType, manufacturer, engineCapacity, numOfSeats, engineType, engine, color, ownerId) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
 
@@ -103,38 +97,75 @@ public class VehicleInfoServlet extends HttpServlet {
                             out.println("Record inserted successfully.");
                         } else {
                             session.setAttribute("msg", "Vehicle record could not be inserted.");
-                            out.println("Vehicle record could not be inserted.");
+                            out.println("Vehicle record  not be inserted.");
                         }
 
 
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-//                    Vehicle waaro code add kanduy
-//                    us m ownere id do ge jo ooper aarha hai
-//            INSERT INTO Vehcile(...vehicle , ownerId) VaLUES(?,?.)
-//                    p.setInt(5,ownerId)
-                        }else{
-//                    owner ADd kanddye
-                }
-                int r =  preparedStatement2.executeUpdate();
+                        }
+//YAHA p agar id Nahii milla tu hum owner ko add krrygy ada
+                else{
+                    String ownerName =request.getParameter("ownerName");
+                    String ownerFname=request.getParameter("ownerFname");
+                    cnic=request.getParameter("cnic");
+                    String ownerAddress=request.getParameter("ownerAddress");
+                    String query1="INSERT INTO owner ( ownerName, ownerFname,cnic,ownerAddress) VALUES (?, ?, ?, ?)";
+                    PreparedStatement preparedStatement2 = connection.prepareStatement(query1);
+                    preparedStatement2.setString(1,ownerName);
+                    preparedStatement2.setString(2,ownerFname);
+                    preparedStatement2.setString(3,cnic);
+                    preparedStatement2.setString(4,ownerAddress);
 
-                PrintWriter out = response.getWriter();
-                if (r>0) {
-                    session.setAttribute("msg", "Owner Inserted Successfully!");
-                    out.println("owner inserted successfully.");
-                } else {
-                    session.setAttribute("msg", "Owner Could not be Inserted");
-                    out.println("Owner not record.");
+                    int r =  preparedStatement2.executeUpdate();
+
+                    PrintWriter out = response.getWriter();
+                    if (r>0) {
+
+//                        Ownere j Details krry eendi eeho jeko haani insert thyoo aahy
+//                        Solution :
+//                        aap ek Query Challalo Select k us m where cond lagao where cnic = 'cnic'
+//                        PORE ROW MEL JAIGE PHR  OWNER ID PHR MA VEHICLEINFO KO DNE HOGE
+                        String q12="Select * from owner where cnic=?";
+
+                        PreparedStatement ps=connection.prepareStatement(q12);
+                        ps.setString(1,cnic);
+                        ResultSet rs=ps.executeQuery();
+
+                        if (rs.next()){
+                            int ownerId = rs.getInt("ownerId");
+                            String insertVehicleQuery = "INSERT INTO VehicleInfo ( vehicleNo, bodyType, manufacturer, engineCapacity, numOfSeats, engineType, engine, color, ownerId) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
+                            PreparedStatement vps = connection.prepareStatement(insertVehicleQuery);
+                            vps.setString(1, vehicleNo);
+                            vps.setString(2, bodyType);
+                            vps.setString(3, manufacturer);
+                            vps.setInt(4, engineCapacity);
+                            vps.setInt(5, numOfSeats);
+                            vps.setString(6, engineType);
+                            vps.setString(7, engine);
+                            vps.setString(8, color);
+                            vps.setInt(9, ownerId);
+
+                            int i = vps.executeUpdate();
+
+                            session.setAttribute("msg", "Vehicle Registered Successfullly!");
+                            out.println("Vehicle Registered Successfullly.");
+                        } else {
+                            session.setAttribute("msg", "Vehicle Could not Successfullly!s");
+                            out.println("Owner not record.");
+
+                        }
+                        }
+
 
                 }
+                ///
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-            //harec connecton watha unkha bd  ma try carhc m pereped m kadhan
-
 
             try {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");
